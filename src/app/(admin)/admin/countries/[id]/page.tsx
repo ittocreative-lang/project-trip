@@ -12,12 +12,22 @@ export default async function EditCountryPage({
 }) {
   const { id } = await params;
 
-  const country =
-    await prisma.country.findUnique({
-      where: {
-        id: Number(id),
-      },
-    });
+const country =
+  await prisma.country.findUnique({
+    where: {
+      id: Number(id),
+    },
+    select: {
+      id: true,
+      name: true,
+      isoCode: true,
+      locale: true,
+      language: true,
+      currency: true,
+      isActive: true,
+      isDefault: true,
+    },
+  });
 
   if (!country) {
     notFound();
