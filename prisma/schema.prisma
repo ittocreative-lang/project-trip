@@ -78,7 +78,9 @@ model Country {
   states State[]
 
   articles Article[]
-
+ locale    String?
+  language  String?
+  currency  String?
   marketCountries MarketCountry[]
 }
 
