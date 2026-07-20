@@ -4,14 +4,15 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 interface City {
-id: string
-name: string
-state: {
-name: string
-country: {
-name: string
-}
-}
+  id: number
+  name: string
+  isoCode: string
+  state: {
+    name: string
+    country: {
+      name: string
+    }
+  }
 }
 
 interface Props {
