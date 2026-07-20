@@ -3,8 +3,7 @@ import { prisma } from "@/lib/prisma"
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string; imageId: string } }
-) {
+{ params }: { params: Promise<{ id: string; imageId: string }> }) {
   try {
     const image = await prisma.hotelImage.findUnique({
       where: { id: params.imageId },

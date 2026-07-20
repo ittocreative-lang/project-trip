@@ -3,11 +3,10 @@ import { prisma } from "@/lib/prisma"
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string; imageId: string } }
+  { params }: { params: Promise<{ id: string; imageId: string }> }
 ) {
   try {
-    const hotelId = params.id
-    const imageId = params.imageId
+    const { id: hotelId, imageId } = await params
 
     // reset semua featured dulu
     await prisma.hotelImage.updateMany({
