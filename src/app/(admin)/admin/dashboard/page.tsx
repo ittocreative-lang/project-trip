@@ -17,8 +17,7 @@ import {
 export const dynamic = "force-dynamic"
 
 export default async function AdminDashboard() {
-  const session = await auth()
-
+const session = await getServerSession(authOptions)
   if (!session?.user) {
     redirect("/admin-login")
   }

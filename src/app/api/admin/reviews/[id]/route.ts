@@ -1,14 +1,29 @@
-import { NextResponse } from "next/server"
-import { auth } from "@/lib/auth-options"
-import { prisma } from "@/lib/prisma"
-import { isStaff } from "@/lib/roles"
+import { NextResponse } from "next/server";
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth-options"
+import { prisma } from "@/lib/prisma";
+import { isStaff } from "@/lib/roles";
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
-  const session = await auth()
+export async function DELETE(
+  _: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions);
+
   if (!session || !isStaff(session.user.role)) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    return NextResponse.json(
+      { error: "Unauthorized" },
+      { status: 401 }
+    );
   }
 
-  await prisma.review.delete({ where: { id: params.id } })
-  return NextResponse.json({ success: true })
+  await prisma.review.delete({
+    where: {
+      id: params.id,
+    },
+  });
+
+  return NextResponse.json({
+    success: true,
+  });
 }

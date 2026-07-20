@@ -1,9 +1,10 @@
 import { prisma } from "@/lib/prisma"
-import { auth } from "@/lib/auth"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth-options"
 import NewHotelForm from "@/components/admin/NewHotelForm"
 
 export default async function NewHotelPage() {
-  const session = await auth()
+const session = await getServerSession(authOptions)
 
   const cities = await prisma.city.findMany({
     orderBy: {

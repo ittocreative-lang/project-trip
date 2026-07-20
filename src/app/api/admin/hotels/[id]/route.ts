@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
-import { auth } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth-options"
 import { hasRole, ROLES } from "@/lib/role"
 import slugify from "slugify"
 
@@ -15,7 +16,7 @@ req: Request,
 { params }: RouteProps
 ) {
 try {
-const session = await auth()
+const session = await getServerSession(authOptions)
 
 
 if (
@@ -118,8 +119,7 @@ req: Request,
 { params }: RouteProps
 ) {
 try {
-const session = await auth()
-
+const session = await getServerSession(authOptions)
 
 if (
   !session?.user ||

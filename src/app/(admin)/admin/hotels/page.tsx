@@ -1,12 +1,13 @@
 import { prisma } from "@/lib/prisma"
-import { auth } from "@/lib/auth"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth-options"
 import { ROLES } from "@/lib/role"
 import Link from "next/link"
 import { Star } from "lucide-react"
 import DeleteHotelButton from "@/components/admin/DeleteHotelButton"
 
 export default async function AdminHotelsPage() {
-const session = await auth()
+const session = await getServerSession(authOptions)
 const role = session?.user?.role ?? 0
 
 const hotels = await prisma.hotel.findMany({
@@ -46,7 +47,7 @@ status: "PUBLISHED" | "ARCHIVED"
 "use server"
 
 
-const session = await auth()
+const session = await getServerSession(authOptions)
 
 const role = session?.user?.role ?? 0
 

@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/prisma"
-import { auth } from "@/lib/auth"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth-options"
 import { NextResponse } from "next/server"
 import { hash } from "bcryptjs"
 import { ROLES } from "@/lib/role"
 
 export async function POST(request: Request) {
-  const session = await auth()
+const session = await getServerSession(authOptions)
 
   if (!session || session.user.role < ROLES.ADMIN) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
