@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth"
-import { authOptions } from "@/lib/auth-options"
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth-options";
 import { prisma } from "@/lib/prisma";
-import { isStaff } from "@/lib/role";
+import { hasRole, ROLES } from "@/lib/role";
 
 export async function DELETE(
   _: Request,
@@ -10,7 +10,7 @@ export async function DELETE(
 ) {
   const session = await getServerSession(authOptions);
 
-  if (!session || !isStaff(session.user.role)) {
+  if (!session || !hasRole(session.user.role, ROLES.STAFF)) {
     return NextResponse.json(
       { error: "Unauthorized" },
       { status: 401 }
