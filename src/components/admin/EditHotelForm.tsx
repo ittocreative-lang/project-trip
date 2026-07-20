@@ -20,16 +20,22 @@ interface Props {
     name: string
     slug: string
     cityId: number
-    address: string
-    shortDescription: string
-    about: string
+
+    address: string | null
+    shortDescription: string | null
+    about: string | null
+
     stars: number
+
     priceMin: number | null
-    officialSite: string
-    phone: string
-    email: string
+
+    officialSite: string | null
+    phone: string | null
+    email: string | null
+
     latitude: number | null
     longitude: number | null
+
     isFeatured: boolean
     status: string
   }
