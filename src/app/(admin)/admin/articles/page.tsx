@@ -62,13 +62,17 @@ export default async function AdminArticlesPage() {
                   </td>
                   <td className="px-4 py-3 text-slate-500">/{article.slug}</td>
                   <td className="px-4 py-3 text-center">
-                    <span className={`text-xs px-2 py-1 rounded-full ${
-                      article.published 
-                        ? "bg-green-100 text-green-600" 
-                        : "bg-slate-100 text-slate-500"
-                    }`}>
-                      {article.published ? "Published" : "Draft"}
-                    </span>
+                    <span
+  className={`text-xs px-2 py-1 rounded-full ${
+    article.status === "PUBLISHED"
+      ? "bg-green-100 text-green-600"
+      : article.status === "DRAFT"
+      ? "bg-yellow-100 text-yellow-600"
+      : "bg-slate-100 text-slate-500"
+  }`}
+>
+  {article.status}
+</span>
                   </td>
                   <td className="px-4 py-3 text-slate-400">
                     {new Date(article.createdAt).toLocaleDateString("id-ID")}
