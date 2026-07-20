@@ -1,0 +1,394 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  bio           String?
+  role          Int       @default(10)
+
+  accounts Account[]
+  sessions Session[]
+
+  reviews   Review[]
+  bookmarks HotelBookmark[]
+
+  createdHotels Hotel[]   @relation("HotelCreator")
+  articles      Article[] @relation("ArticleAuthor")
+  createdAt     DateTime  @default(now())
+}
+
+model Account {
+  id     String @id @default(cuid())
+  userId String
+
+  type              String
+  provider          String
+  providerAccountId String
+
+  refresh_token String?
+  access_token  String?
+  expires_at    Int?
+  token_type    String?
+  scope         String?
+  id_token      String?
+  session_state String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Country {
+  id Int @id @default(autoincrement())
+
+  name    String
+  isoCode String @unique
+
+  isActive  Boolean @default(true)
+  isDefault Boolean @default(false)
+
+  states State[]
+
+  articles Article[]
+
+  marketCountries MarketCountry[]
+}
+
+model State {
+  id Int @id @default(autoincrement())
+
+  name    String
+  isoCode String
+
+  countryId Int
+  country   Country @relation(fields: [countryId], references: [id])
+
+  cities City[]
+
+  @@unique([countryId, isoCode])
+}
+
+model City {
+  id Int @id @default(autoincrement())
+
+  name String
+  slug String @unique
+
+  stateId Int
+  state   State @relation(fields: [stateId], references: [id])
+
+  hotels Hotel[]
+
+  attractions Attraction[]
+
+  featuredMarkets FeaturedCity[]
+}
+
+model Language {
+  id Int @id @default(autoincrement())
+
+  code   String @unique
+  locale String @unique
+
+  name       String
+  nativeName String
+
+  isRTL Boolean @default(false)
+
+  isActive  Boolean @default(true)
+  isDefault Boolean @default(false)
+
+  defaultMarkets Market[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+
+model Market {
+  id Int @id @default(autoincrement())
+
+  name String
+  code String @unique
+
+  domain String? @unique
+
+  defaultLanguageId Int
+  defaultLanguage   Language @relation(fields: [defaultLanguageId], references: [id])
+
+  defaultCurrency String
+
+  isActive  Boolean @default(true)
+  isDefault Boolean @default(false)
+
+  countries MarketCountry[]
+
+  featuredCities FeaturedCity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MarketCountry {
+  marketId  Int
+  countryId Int
+
+  market  Market  @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  country Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+
+  @@id([marketId, countryId])
+}
+
+model FeaturedCity {
+  id Int @id @default(autoincrement())
+
+  marketId Int
+  cityId   Int
+
+  sortOrder Int @default(0)
+
+  market Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  city   City   @relation(fields: [cityId], references: [id], onDelete: Cascade)
+
+  @@unique([marketId, cityId])
+}
+
+model Hotel {
+  id   String @id @default(cuid())
+  name String
+  slug String @unique
+
+  shortDescription String?
+  about            String?
+  address          String?
+
+  stars    Int   @default(0)
+  rating   Float @default(0)
+  priceMin Int?
+
+  officialSite String?
+  phone        String?
+  email        String?
+
+  latitude  Float?
+  longitude Float?
+
+  isFeatured Boolean     @default(false)
+  status     HotelStatus @default(DRAFT)
+
+  cityId Int
+  city   City @relation(fields: [cityId], references: [id])
+
+  images      HotelImage[]
+  amenities   HotelAmenity[]
+  providers   HotelProvider[]
+  reviews     Review[]
+  bookmarks   HotelBookmark[]
+  attractions HotelAttraction[]
+
+  createdById String?
+  createdBy   User?   @relation("HotelCreator", fields: [createdById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum HotelStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model HotelImage {
+  id      String @id @default(cuid())
+  hotelId String
+
+  hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+
+  url        String
+  key        String? // <-- R2 path (WAJIB untuk production nanti)
+  isFeatured Boolean @default(false)
+  sortOrder  Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AmenityCategory {
+  id String @id @default(cuid())
+
+  name String
+  slug String @unique
+
+  sortOrder Int @default(0)
+
+  amenities Amenity[]
+}
+
+model Amenity {
+  id   String  @id @default(cuid())
+  name String
+  slug String  @unique
+  icon String?
+
+  categoryId String
+  category   AmenityCategory @relation(fields: [categoryId], references: [id])
+
+  isPopular Boolean @default(false)
+
+  hotels HotelAmenity[]
+}
+
+model HotelAmenity {
+  hotelId   String
+  amenityId String
+
+  hotel   Hotel   @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  amenity Amenity @relation(fields: [amenityId], references: [id], onDelete: Cascade)
+
+  @@id([hotelId, amenityId])
+}
+
+model Attraction {
+  id String @id @default(cuid())
+
+  name String
+  slug String @unique
+
+  description String?
+
+  latitude  Float?
+  longitude Float?
+
+  cityId Int
+  city   City @relation(fields: [cityId], references: [id])
+
+  hotels HotelAttraction[]
+
+  createdAt DateTime @default(now())
+}
+
+model HotelAttraction {
+  hotelId      String
+  attractionId String
+
+  distanceKm Float?
+
+  hotel      Hotel      @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  attraction Attraction @relation(fields: [attractionId], references: [id], onDelete: Cascade)
+
+  @@id([hotelId, attractionId])
+}
+
+model Provider {
+  id   String  @id @default(cuid())
+  name String
+  slug String  @unique
+  logo String?
+
+  hotels HotelProvider[]
+}
+
+model HotelProvider {
+  id String @id @default(cuid())
+
+  hotelId    String
+  providerId String
+
+  hotel    Hotel    @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  provider Provider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  affiliateUrl String
+  price        Int?
+  currency     String  @default("IDR")
+  isAvailable  Boolean @default(true)
+
+  updatedAt DateTime @updatedAt
+
+  @@unique([hotelId, providerId])
+}
+
+model Review {
+  id String @id @default(cuid())
+
+  rating  Int
+  title   String
+  content String
+  photos  String[]
+
+  userId  String
+  hotelId String
+
+  user  User  @relation(fields: [userId], references: [id])
+  hotel Hotel @relation(fields: [hotelId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model HotelBookmark {
+  id String @id @default(cuid())
+
+  userId  String
+  hotelId String
+
+  user  User  @relation(fields: [userId], references: [id])
+  hotel Hotel @relation(fields: [hotelId], references: [id])
+
+  @@unique([userId, hotelId])
+}
+
+model Article {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  excerpt   String
+  content   String
+  thumbnail String?
+  tags      String[]
+
+  status ArticleStatus @default(DRAFT)
+
+  countryId Int?
+  country   Country? @relation(fields: [countryId], references: [id])
+
+  authorId String?
+  author   User?   @relation("ArticleAuthor", fields: [authorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
