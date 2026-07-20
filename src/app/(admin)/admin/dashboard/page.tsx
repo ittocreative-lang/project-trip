@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
-import { auth } from "@/lib/auth"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth-options"
 import { redirect } from "next/navigation"
 import { ROLES } from "@/lib/role"
 
@@ -17,7 +18,8 @@ import {
 export const dynamic = "force-dynamic"
 
 export default async function AdminDashboard() {
-const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions)
+
   if (!session?.user) {
     redirect("/admin-login")
   }
