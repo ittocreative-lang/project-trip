@@ -8,7 +8,7 @@ type Props = {
     id: number;
     name: string;
     code: string;
-    languageId: number;
+    defaultLanguageId: number;
     defaultCurrency: string;
     domain: string | null;
     isActive: boolean;
@@ -33,8 +33,8 @@ export default function MarketForm({
   const [name, setName] = useState(market?.name ?? "");
   const [code, setCode] = useState(market?.code ?? "");
 
-  const [languageId, setLanguageId] = useState(
-    market?.languageId?.toString() ?? ""
+  const [defaultLanguageId, setDefaultLanguageId] = useState(
+    market?.defaultLanguageId?.toString() ?? ""
   );
 
   const [defaultCurrency, setDefaultCurrency] = useState(
@@ -61,7 +61,7 @@ export default function MarketForm({
     const body = {
       name,
       code,
-      languageId: Number(languageId),
+      defaultLanguageId: Number(defaultLanguageId),
       defaultCurrency,
       domain: domain || null,
       isActive,
@@ -120,7 +120,9 @@ export default function MarketForm({
 
         <input
           value={code}
-          onChange={(e) => setCode(e.target.value.toLowerCase())}
+          onChange={(e) =>
+            setCode(e.target.value.toLowerCase())
+          }
           className="w-full rounded-xl border border-slate-300 px-4 py-3"
           placeholder="id"
           required
@@ -131,15 +133,17 @@ export default function MarketForm({
         </p>
       </div>
 
-      {/* Language */}
+      {/* Default Language */}
       <div>
         <label className="mb-2 block text-sm font-medium">
           Default Language
         </label>
 
         <select
-          value={languageId}
-          onChange={(e) => setLanguageId(e.target.value)}
+          value={defaultLanguageId}
+          onChange={(e) =>
+            setDefaultLanguageId(e.target.value)
+          }
           className="w-full rounded-xl border border-slate-300 px-4 py-3"
           required
         >
@@ -167,7 +171,9 @@ export default function MarketForm({
         <input
           value={defaultCurrency}
           onChange={(e) =>
-            setDefaultCurrency(e.target.value.toUpperCase())
+            setDefaultCurrency(
+              e.target.value.toUpperCase()
+            )
           }
           className="w-full rounded-xl border border-slate-300 px-4 py-3"
           placeholder="IDR"
@@ -183,7 +189,9 @@ export default function MarketForm({
 
         <input
           value={domain}
-          onChange={(e) => setDomain(e.target.value)}
+          onChange={(e) =>
+            setDomain(e.target.value)
+          }
           className="w-full rounded-xl border border-slate-300 px-4 py-3"
           placeholder="unggo.co.id"
         />
@@ -198,7 +206,9 @@ export default function MarketForm({
         <input
           type="checkbox"
           checked={isActive}
-          onChange={(e) => setIsActive(e.target.checked)}
+          onChange={(e) =>
+            setIsActive(e.target.checked)
+          }
         />
 
         <span>Active</span>
@@ -209,7 +219,9 @@ export default function MarketForm({
         <input
           type="checkbox"
           checked={isDefault}
-          onChange={(e) => setIsDefault(e.target.checked)}
+          onChange={(e) =>
+            setIsDefault(e.target.checked)
+          }
         />
 
         <span>Default Market</span>
