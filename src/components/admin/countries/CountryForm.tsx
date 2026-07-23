@@ -8,24 +8,13 @@ type Props = {
     id: number;
     name: string;
     isoCode: string;
-    locale: string | null;
-    language: string | null;
-    currency: string | null;
     isActive: boolean;
     isDefault: boolean;
   };
-
-  languages: {
-    id: number;
-    code: string;
-    locale: string;
-    nativeName: string;
-  }[];
 };
 
 export default function CountryForm({
   country,
-  languages,
 }: Props) {
   const router = useRouter();
 
@@ -39,18 +28,6 @@ export default function CountryForm({
     country?.isoCode ?? ""
   );
 
-  const [locale, setLocale] = useState(
-    country?.locale ?? ""
-  );
-
-  const [language, setLanguage] = useState(
-    country?.language ?? ""
-  );
-
-  const [currency, setCurrency] = useState(
-    country?.currency ?? ""
-  );
-
   const [isActive, setIsActive] = useState(
     country?.isActive ?? true
   );
@@ -59,12 +36,19 @@ export default function CountryForm({
     country?.isDefault ?? false
   );
 
-  async function submit(
-    e: React.FormEvent
+  async function onSubmit(
+    e: React.FormEvent<HTMLFormElement>
   ) {
     e.preventDefault();
 
     setLoading(true);
+
+    const body = {
+      name,
+      isoCode,
+      isActive,
+      isDefault,
+    };
 
     const response = await fetch(
       country
@@ -73,18 +57,9 @@ export default function CountryForm({
       {
         method: country ? "PATCH" : "POST",
         headers: {
-          "Content-Type":
-            "application/json",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          name,
-          isoCode,
-          locale,
-          language,
-          currency,
-          isActive,
-          isDefault,
-        }),
+        body: JSON.stringify(body),
       }
     );
 
@@ -99,26 +74,12 @@ export default function CountryForm({
     router.refresh();
   }
 
-  function selectLanguage(
-    value: string
-  ) {
-    const lang = languages.find(
-      (l) => l.locale === value
-    );
-
-    setLocale(value);
-
-    if (lang) {
-      setLanguage(lang.code);
-    }
-  }
-
   return (
     <form
-      onSubmit={submit}
+      onSubmit={onSubmit}
       className="space-y-6 rounded-2xl border border-slate-200 bg-white p-6"
     >
-      {/* Country */}
+      {/* Name */}
       <div>
         <label className="mb-2 block text-sm font-medium">
           Country Name
@@ -129,13 +90,14 @@ export default function CountryForm({
           onChange={(e) =>
             setName(e.target.value)
           }
-          className="w-full rounded-xl border border-slate-300 px-4 py-3"
           placeholder="Indonesia"
           required
+          className="w-full rounded-xl border border-slate-300 px-4 py-3"
         />
       </div>
 
-      {/* ISO */}
+
+      {/* ISO Code */}
       <div>
         <label className="mb-2 block text-sm font-medium">
           ISO Code
@@ -148,61 +110,17 @@ export default function CountryForm({
               e.target.value.toUpperCase()
             )
           }
-          className="w-full rounded-xl border border-slate-300 px-4 py-3 uppercase"
           placeholder="ID"
-          maxLength={2}
+          maxLength={3}
           required
-        />
-      </div>
-
-      {/* Language */}
-      <div>
-        <label className="mb-2 block text-sm font-medium">
-          Default Language
-        </label>
-
-        <select
-          value={locale}
-          onChange={(e) =>
-            selectLanguage(
-              e.target.value
-            )
-          }
           className="w-full rounded-xl border border-slate-300 px-4 py-3"
-        >
-          <option value="">
-            Select language
-          </option>
-
-          {languages.map((lang) => (
-            <option
-              key={lang.id}
-              value={lang.locale}
-            >
-              {lang.nativeName} (
-              {lang.locale})
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Currency */}
-      <div>
-        <label className="mb-2 block text-sm font-medium">
-          Currency
-        </label>
-
-        <input
-          value={currency}
-          onChange={(e) =>
-            setCurrency(
-              e.target.value.toUpperCase()
-            )
-          }
-          className="w-full rounded-xl border border-slate-300 px-4 py-3 uppercase"
-          placeholder="IDR"
         />
+
+        <p className="mt-1 text-xs text-slate-500">
+          Example: ID, MY, SG, JP
+        </p>
       </div>
+
 
       {/* Active */}
       <label className="flex items-center gap-3">
@@ -210,14 +128,16 @@ export default function CountryForm({
           type="checkbox"
           checked={isActive}
           onChange={(e) =>
-            setIsActive(
-              e.target.checked
-            )
+            setIsActive(e.target.checked)
           }
+          className="h-4 w-4"
         />
 
-        <span>Active</span>
+        <span>
+          Active Country
+        </span>
       </label>
+
 
       {/* Default */}
       <label className="flex items-center gap-3">
@@ -225,14 +145,16 @@ export default function CountryForm({
           type="checkbox"
           checked={isDefault}
           onChange={(e) =>
-            setIsDefault(
-              e.target.checked
-            )
+            setIsDefault(e.target.checked)
           }
+          className="h-4 w-4"
         />
 
-        <span>Default Country</span>
+        <span>
+          Default Country
+        </span>
       </label>
+
 
       <div className="flex gap-3">
         <button
@@ -242,14 +164,13 @@ export default function CountryForm({
         >
           {loading
             ? "Saving..."
-            : "Save"}
+            : "Save Country"}
         </button>
+
 
         <button
           type="button"
-          onClick={() =>
-            router.back()
-          }
+          onClick={() => router.back()}
           className="rounded-xl border border-slate-300 px-5 py-3"
         >
           Cancel
