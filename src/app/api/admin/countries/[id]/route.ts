@@ -31,6 +31,7 @@ export async function GET(
   return NextResponse.json(country);
 }
 
+
 export async function PATCH(
   request: NextRequest,
   {
@@ -44,6 +45,7 @@ export async function PATCH(
 
     const body = await request.json();
 
+
     if (body.isDefault) {
       await prisma.country.updateMany({
         data: {
@@ -52,26 +54,31 @@ export async function PATCH(
       });
     }
 
+
     const country = await prisma.country.update({
       where: {
         id: Number(id),
       },
+
       data: {
         name: body.name,
+
         isoCode: body.isoCode.toUpperCase(),
 
-        locale: body.locale || null,
-        language: body.language || null,
-        currency: body.currency || null,
-
         isActive: body.isActive,
+
         isDefault: body.isDefault,
       },
     });
 
+
     return NextResponse.json(country);
+
+
   } catch (error) {
+
     console.error(error);
+
 
     return NextResponse.json(
       {
@@ -84,6 +91,8 @@ export async function PATCH(
   }
 }
 
+
+
 export async function DELETE(
   request: NextRequest,
   {
@@ -92,27 +101,35 @@ export async function DELETE(
     params: Promise<{ id: string }>;
   }
 ) {
+
   try {
+
     const { id } = await params;
 
+
     await prisma.country.delete({
-      where: {
-        id: Number(id),
+      where:{
+        id:Number(id),
       },
     });
 
+
     return NextResponse.json({
-      success: true,
+      success:true,
     });
-  } catch (error) {
+
+
+  } catch(error){
+
     console.error(error);
+
 
     return NextResponse.json(
       {
-        message: "Failed to delete country",
+        message:"Failed to delete country",
       },
       {
-        status: 500,
+        status:500,
       }
     );
   }
