@@ -12,8 +12,7 @@ export default async function EditCountryPage({
 }) {
   const { id } = await params;
 
-const country =
-  await prisma.country.findUnique({
+  const country = await prisma.country.findUnique({
     where: {
       id: Number(id),
     },
@@ -21,9 +20,6 @@ const country =
       id: true,
       name: true,
       isoCode: true,
-      locale: true,
-      language: true,
-      currency: true,
       isActive: true,
       isDefault: true,
     },
@@ -32,16 +28,6 @@ const country =
   if (!country) {
     notFound();
   }
-
-  const languages =
-    await prisma.language.findMany({
-      where: {
-        isActive: true,
-      },
-      orderBy: {
-        nativeName: "asc",
-      },
-    });
 
   return (
     <div className="space-y-6">
@@ -57,7 +43,6 @@ const country =
 
       <CountryForm
         country={country}
-        languages={languages}
       />
     </div>
   );
