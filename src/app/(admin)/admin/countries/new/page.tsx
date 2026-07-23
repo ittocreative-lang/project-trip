@@ -1,16 +1,6 @@
-import { prisma } from "@/lib/prisma";
 import CountryForm from "@/components/admin/countries/CountryForm";
 
 export default async function NewCountryPage() {
-  const languages = await prisma.language.findMany({
-    where: {
-      isActive: true,
-    },
-    orderBy: {
-      nativeName: "asc",
-    },
-  });
-
   return (
     <div className="space-y-6">
       <div>
@@ -23,9 +13,7 @@ export default async function NewCountryPage() {
         </p>
       </div>
 
-      <CountryForm
-        languages={languages}
-      />
+      <CountryForm />
     </div>
   );
 }

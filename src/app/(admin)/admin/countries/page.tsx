@@ -42,33 +42,49 @@ export default async function AdminCountriesPage() {
         </Link>
       </div>
 
+
       {/* Table */}
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
         <table className="min-w-full">
           <thead className="bg-slate-50">
             <tr className="text-left text-sm font-semibold text-slate-700">
-              <th className="px-6 py-4">Country</th>
-              <th className="px-6 py-4">ISO</th>
-              <th className="px-6 py-4">Locale</th>
-              <th className="px-6 py-4">Currency</th>
-              <th className="px-6 py-4">States</th>
-              <th className="px-6 py-4">Markets</th>
-              <th className="px-6 py-4">Status</th>
+              <th className="px-6 py-4">
+                Country
+              </th>
+
+              <th className="px-6 py-4">
+                ISO
+              </th>
+
+              <th className="px-6 py-4">
+                States
+              </th>
+
+              <th className="px-6 py-4">
+                Markets
+              </th>
+
+              <th className="px-6 py-4">
+                Status
+              </th>
+
               <th className="w-32 px-6 py-4"></th>
             </tr>
           </thead>
+
 
           <tbody>
             {countries.length === 0 && (
               <tr>
                 <td
-                  colSpan={8}
+                  colSpan={6}
                   className="px-6 py-10 text-center text-sm text-slate-500"
                 >
                   No countries found.
                 </td>
               </tr>
             )}
+
 
             {countries.map((country) => (
               <tr
@@ -87,25 +103,21 @@ export default async function AdminCountriesPage() {
                   )}
                 </td>
 
+
                 <td className="px-6 py-4">
                   {country.isoCode}
                 </td>
 
-                <td className="px-6 py-4">
-                  {country.locale ?? "-"}
-                </td>
-
-                <td className="px-6 py-4">
-                  {country.currency ?? "-"}
-                </td>
 
                 <td className="px-6 py-4">
                   {country._count.states}
                 </td>
 
+
                 <td className="px-6 py-4">
                   {country._count.marketCountries}
                 </td>
+
 
                 <td className="px-6 py-4">
                   {country.isActive ? (
@@ -118,6 +130,7 @@ export default async function AdminCountriesPage() {
                     </span>
                   )}
                 </td>
+
 
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-4">
