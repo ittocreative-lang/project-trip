@@ -1,5 +1,5 @@
 export interface FeaturedHotel {
-  id: number;
+  id: string;
 
   name: string;
 
@@ -10,17 +10,21 @@ export interface FeaturedHotel {
   priceMin: number | null;
 
   images: {
+    id: string;
     url: string;
   }[];
 
   providers: {
-    id: number;
+    id: string;
+
     provider: {
+      id: string;
       name: string;
       logo: string | null;
     };
   }[];
 }
+
 
 export interface FeaturedCity {
   id: number;
