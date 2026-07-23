@@ -25,13 +25,11 @@ const session = await getServerSession(authOptions)
     },
   })
 
-  return (
-    <div className="p-6">
-      <NewHotelForm
-        cities={cities}
-        amenities={amenities}
-        role={session?.user?.role ?? 0}
-      />
-    </div>
-  )
+return (
+  <div className="p-6">
+    <NewHotelForm
+      cities={cities}
+    />
+  </div>
+)
 }
