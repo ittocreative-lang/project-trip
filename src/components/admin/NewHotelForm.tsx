@@ -6,7 +6,6 @@ import { useState } from "react"
 interface City {
   id: number
   name: string
-  isoCode: string
   state: {
     name: string
     country: {
