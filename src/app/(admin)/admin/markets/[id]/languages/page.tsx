@@ -2,9 +2,9 @@ import { notFound } from "next/navigation";
 
 import { prisma } from "@/lib/prisma";
 
-import MarketForm from "@/components/admin/markets/MarketForm";
+import MarketLanguagesForm from "@/components/admin/markets/MarketLanguagesForm";
 
-export default async function EditMarketPage({
+export default async function MarketLanguagesPage({
   params,
 }: {
   params: Promise<{
@@ -17,15 +17,8 @@ export default async function EditMarketPage({
     where: {
       id: Number(id),
     },
-    select: {
-      id: true,
-      name: true,
-      code: true,
-      defaultLanguageId: true,
-      defaultCurrency: true,
-      domain: true,
-      isActive: true,
-      isDefault: true,
+    include: {
+      languages: true,
     },
   });
 
@@ -40,28 +33,26 @@ export default async function EditMarketPage({
     orderBy: {
       nativeName: "asc",
     },
-    select: {
-      id: true,
-      nativeName: true,
-      locale: true,
-    },
   });
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">
-          Edit Market
+          Market Languages
         </h1>
 
-        <p className="mt-1 text-sm text-slate-500">
-          Update market information.
+        <p className="text-sm text-slate-500">
+          Select languages available for this market.
         </p>
       </div>
 
-      <MarketForm
-        market={market}
+      <MarketLanguagesForm
+        marketId={market.id}
         languages={languages}
+        selectedLanguageIds={market.languages.map(
+          (item) => item.languageId
+        )}
       />
     </div>
   );

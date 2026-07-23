@@ -1,22 +1,19 @@
 import { prisma } from "@/lib/prisma";
+
 import MarketForm from "@/components/admin/markets/MarketForm";
 
 export default async function NewMarketPage() {
-  const countries = await prisma.country.findMany({
-    where: {
-      isActive: true,
-    },
-    orderBy: {
-      name: "asc",
-    },
-  });
-
   const languages = await prisma.language.findMany({
     where: {
       isActive: true,
     },
     orderBy: {
       nativeName: "asc",
+    },
+    select: {
+      id: true,
+      nativeName: true,
+      locale: true,
     },
   });
 
@@ -33,7 +30,6 @@ export default async function NewMarketPage() {
       </div>
 
       <MarketForm
-        countries={countries}
         languages={languages}
       />
     </div>

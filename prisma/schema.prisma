@@ -69,18 +69,16 @@ model VerificationToken {
 model Country {
   id Int @id @default(autoincrement())
 
-  name    String
+  name String
   isoCode String @unique
 
-  isActive  Boolean @default(true)
+  isActive Boolean @default(true)
   isDefault Boolean @default(false)
 
   states State[]
 
   articles Article[]
- locale    String?
-  language  String?
-  currency  String?
+
   marketCountries MarketCountry[]
 }
 
@@ -117,18 +115,21 @@ model City {
 model Language {
   id Int @id @default(autoincrement())
 
-  code   String @unique
+  code String @unique
   locale String @unique
 
-  name       String
+  name String
   nativeName String
 
   isRTL Boolean @default(false)
 
-  isActive  Boolean @default(true)
+  isActive Boolean @default(true)
   isDefault Boolean @default(false)
 
   defaultMarkets Market[]
+
+  // TAMBAHKAN INI
+  markets MarketLanguage[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -145,12 +146,15 @@ model Market {
   domain String? @unique
 
   defaultLanguageId Int
-  defaultLanguage   Language @relation(fields: [defaultLanguageId], references: [id])
+  defaultLanguage Language @relation(fields: [defaultLanguageId], references: [id])
 
   defaultCurrency String
 
-  isActive  Boolean @default(true)
+  isActive Boolean @default(true)
   isDefault Boolean @default(false)
+
+  // TAMBAHKAN INI
+  languages MarketLanguage[]
 
   countries MarketCountry[]
 
@@ -160,11 +164,23 @@ model Market {
   updatedAt DateTime @updatedAt
 }
 
+model MarketLanguage {
+  marketId Int
+  languageId Int
+
+  market Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
+  language Language @relation(fields: [languageId], references: [id], onDelete: Cascade)
+
+  @@id([marketId, languageId])
+}
+
 model MarketCountry {
-  marketId  Int
+  marketId Int
   countryId Int
 
-  market  Market  @relation(fields: [marketId], references: [id], onDelete: Cascade)
+  market Market @relation(fields: [marketId], references: [id], onDelete: Cascade)
+
   country Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
 
   @@id([marketId, countryId])
