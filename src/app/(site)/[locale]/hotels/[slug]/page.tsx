@@ -101,7 +101,7 @@ export default async function HotelDetailPage({
 <div className="mt-8">
   <HotelGallery
     images={hotel.images}
-    name={hotel.name}
+    hotelName={hotel.name}
   />
 </div>
 

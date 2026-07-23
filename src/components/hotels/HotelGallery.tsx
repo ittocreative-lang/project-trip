@@ -8,9 +8,14 @@ type Props = {
     id: string
     url: string
   }[]
+
+  hotelName?: string
 }
 
-export default function HotelGallery({ images }: Props) {
+export default function HotelGallery({
+  images,
+  hotelName = "Hotel",
+}: Props) {
   const [current, setCurrent] = useState(0)
 
   if (!images?.length) {
@@ -37,17 +42,14 @@ export default function HotelGallery({ images }: Props) {
     <section>
       {/* ================= MOBILE SLIDER ================= */}
       <div className="relative md:hidden">
-        {/* IMAGE */}
         <img
           src={images[current].url}
-          alt="Hotel"
+          alt={hotelName}
           className="h-64 w-full rounded-2xl object-cover"
         />
 
-        {/* OVERLAY */}
         <div className="absolute inset-0 rounded-2xl bg-black/10" />
 
-        {/* LEFT BUTTON */}
         <button
           onClick={prevSlide}
           className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow"
@@ -55,7 +57,6 @@ export default function HotelGallery({ images }: Props) {
           <ChevronLeft className="h-5 w-5" />
         </button>
 
-        {/* RIGHT BUTTON */}
         <button
           onClick={nextSlide}
           className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 shadow"
@@ -63,11 +64,11 @@ export default function HotelGallery({ images }: Props) {
           <ChevronRight className="h-5 w-5" />
         </button>
 
-        {/* DOTS */}
+
         <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
-          {images.map((_, index) => (
+          {images.map((image, index) => (
             <button
-              key={index}
+              key={image.id}
               onClick={() => setCurrent(index)}
               className={`h-2 rounded-full transition-all ${
                 current === index
@@ -79,26 +80,30 @@ export default function HotelGallery({ images }: Props) {
         </div>
       </div>
 
+
       {/* ================= DESKTOP GRID ================= */}
       <div className="hidden grid-cols-4 gap-4 md:grid">
+
         {/* MAIN IMAGE */}
         <div className="col-span-2 row-span-2">
           <img
             src={images[0].url}
-            alt="Hotel"
+            alt={hotelName}
             className="h-full w-full rounded-2xl object-cover"
           />
         </div>
+
 
         {/* SIDE IMAGES */}
         {images.slice(1, 5).map((image) => (
           <img
             key={image.id}
             src={image.url}
-            alt="Hotel"
+            alt={hotelName}
             className="h-[180px] w-full rounded-2xl object-cover"
           />
         ))}
+
       </div>
     </section>
   )
