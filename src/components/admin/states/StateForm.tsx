@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Props = {
@@ -29,13 +29,44 @@ export default function StateForm({
     state?.countryId?.toString() ?? ""
   );
 
-  const [name, setName] = useState(
-    state?.name ?? ""
-  );
+  const [name, setName] = useState(state?.name ?? "");
 
   const [isoCode, setIsoCode] = useState(
     state?.isoCode ?? ""
   );
+
+  // Jika edit data, jangan auto generate lagi
+  const [isoManuallyEdited, setIsoManuallyEdited] = useState(
+    !!state
+  );
+
+  function generateIsoCode(value: string) {
+    const words = value
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+
+    if (words.length === 0) return "";
+
+    // Bali -> BA
+    if (words.length === 1) {
+      return words[0].slice(0, 2).toUpperCase();
+    }
+
+    // West Java -> WJ
+    // New South Wales -> NS
+    return words
+      .map((word) => word[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  }
+
+  useEffect(() => {
+    if (!isoManuallyEdited) {
+      setIsoCode(generateIsoCode(name));
+    }
+  }, [name, isoManuallyEdited]);
 
   async function onSubmit(
     e: React.FormEvent<HTMLFormElement>
@@ -144,18 +175,21 @@ export default function StateForm({
         <input
           type="text"
           value={isoCode}
-          onChange={(e) =>
+          onChange={(e) => {
+            setIsoManuallyEdited(true);
             setIsoCode(
               e.target.value.toUpperCase()
-            )
-          }
+            );
+          }}
           className="w-full rounded-xl border border-slate-300 px-4 py-3 uppercase outline-none focus:border-blue-500"
-          placeholder="JB"
+          placeholder="WJ"
           required
         />
 
         <p className="mt-2 text-xs text-slate-500">
-          Example: JB, JT, BA, CA
+          ISO code will be generated automatically from the
+          state name. You can still edit it manually if
+          needed.
         </p>
       </div>
 
