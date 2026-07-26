@@ -3,15 +3,15 @@ import Image from "next/image"
 const providers = [
   {
     name: "Agoda",
-    logo: "/providers/agoda.png",
+    logo: "/providers/Agoda.png",
   },
   {
     name: "Booking.com",
-    logo: "/providers/bookingcom.png",
+    logo: "/providers/Bookingcom.png",
   },
   {
     name: "Traveloka",
-    logo: "/providers/expedia.png",
+    logo: "/providers/Expedia.png",
   },
   {
     name: "Tiket.com",
@@ -19,7 +19,7 @@ const providers = [
   },
   {
     name: "Expedia",
-    logo: "/providers/tripcom.png",
+    logo: "/providers/Tripcom.png",
   },
   {
     name: "Hotels.com",
